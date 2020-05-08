@@ -48,6 +48,7 @@ public class FmBaiduLocationImpClientBaidu extends FmBaiduLocationImpClient {
                 jsonObject.put("latitude", bdLocation.getLatitude());
                 jsonObject.put("longitude", bdLocation.getLongitude());
                 jsonObject.put("bearing", bdLocation.getDirection());
+                jsonObject.put("city", bdLocation.getCity());
                 _ftb.invokeMethod("onLocation", jsonObject);
             }
         };

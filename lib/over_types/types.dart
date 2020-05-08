@@ -39,6 +39,8 @@ class FmBaiduLocationInfo {
   FmMapPoint point;
   // 方向
   double bearing;
+  // 城市
+  String city;
 
   /// 从map初始化
   void fronMap(Map m) {
@@ -53,6 +55,7 @@ class FmBaiduLocationInfo {
     // 海拔
     altitude = m["altitude"];
     bearing = m["bearing"];
+    city = m["city"];
   }
 
   /// 从map创建
