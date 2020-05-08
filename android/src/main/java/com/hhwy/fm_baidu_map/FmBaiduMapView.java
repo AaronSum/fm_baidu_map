@@ -1,6 +1,7 @@
 package com.hhwy.fm_baidu_map;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BaiduMapOptions;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapStatus;
@@ -175,7 +176,9 @@ public class FmBaiduMapView{
     FmBaiduMapView(String name,PluginRegistry.Registrar registrar, FmBaiduMapViewFactory factory){
         _registrar = registrar;
         _ftb = new FmToolsBase(this, name, registrar);
-        _view=new TextureMapView(registrar.activity());
+         BaiduMapOptions options = new BaiduMapOptions();
+         options.overlookingGesturesEnabled(false);
+        _view = new TextureMapView(registrar.activity(),options);
         _bmp = _view.getMap();
         _bmp.setMyLocationEnabled(true);
         _factory = factory;
