@@ -68,6 +68,9 @@ class FmBaiduLocationInfo {
 class FmMapStatusInfo {
   // 坐标点
   FmMapPoint point;
+
+  FmMapPoint northeast;
+  FmMapPoint southwest;
   // 缩放
   double zoom;
   // 俯瞰
@@ -86,6 +89,10 @@ class FmMapStatusInfo {
     point.latitude = m["latitude"];
     // 纬度
     point.longitude = m["longitude"];
+
+    northeast = FmMapPoint(latitude: m['neLat'], longitude: m['neLng']);
+    southwest = FmMapPoint(latitude: m['swLat'], longitude: m['swLng']);
+
     zoom = m["zoom"];
     overlook = m["overlook"];
     rotate = m["rotate"];

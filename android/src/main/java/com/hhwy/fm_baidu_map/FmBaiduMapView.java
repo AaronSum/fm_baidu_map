@@ -240,6 +240,12 @@ public class FmBaiduMapView{
         m.put("rotate",mapStatus.rotate);
         m.put("screenX",mapStatus.targetScreen.x);
         m.put("screenY",mapStatus.targetScreen.y);
+        // new
+        m.put("neLat",mapStatus.bound.northeast.latitude);
+        m.put("neLng",mapStatus.bound.northeast.longitude);
+        m.put("swLat",mapStatus.bound.southwest.latitude);
+        m.put("swLng",mapStatus.bound.southwest.longitude);
+
         _ftb.invokeMethod(name,m);
     }
 
@@ -406,7 +412,7 @@ public class FmBaiduMapView{
         }
     }
 
-    
+
     /**
      * 设置显示顺序
      * @param obj
