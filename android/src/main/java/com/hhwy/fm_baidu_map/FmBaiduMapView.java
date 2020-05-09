@@ -181,6 +181,7 @@ public class FmBaiduMapView{
         _view = new TextureMapView(registrar.activity(),options);
         _bmp = _view.getMap();
         _bmp.setMyLocationEnabled(true);
+        _bmp.setMaxAndMinZoomLevel(21f,6f);
         _factory = factory;
         _bmp.setOnMapLoadedCallback(new BaiduMap.OnMapLoadedCallback() {
             @Override
@@ -392,6 +393,20 @@ public class FmBaiduMapView{
             e.printStackTrace();
         }
     }
+
+
+    /**
+     * 清空地图所有的 Overlay 覆盖物以及 InfoWindow
+     */
+    void clear(){
+        try {
+            _bmp.clear();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    
     /**
      * 设置显示顺序
      * @param obj

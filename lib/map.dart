@@ -139,6 +139,14 @@ class FmBaiduMap {
   }
 
   /*
+   * 移除所有标注
+   */
+  Future clear() async {
+    await _eventChannel.invokeMethod("clear");
+  }
+
+
+  /*
    * 设置标注的顺序
    */
   Future setOverlaysZIndex({String id, String layer, int zIndex}) async {
