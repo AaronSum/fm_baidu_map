@@ -562,7 +562,38 @@ public class FmBaiduMapView{
                     lin.visible(obj.getBoolean("visible"));
                 }
                 option = lin;
-            }else if( type.equalsIgnoreCase("mark")){
+            } else if(type.equalsIgnoreCase("polygon")){
+                JSONArray points = obj.getJSONArray("points");
+                List<LatLng> pts = new ArrayList<LatLng>();
+
+                for( int i=0; i<points.length();++i){
+                    JSONObject item = points.getJSONObject(i);
+                    pts.add(new LatLng(item.getDouble("latitude"),item.getDouble("longitude")));
+                }
+                PolygonOptions mk = new PolygonOptions().points(pts);
+
+                // 填充颜色
+                if (obj.has("fillColor")) {
+                    mk.fillColor(obj.getInt("fillColor"));
+                }
+                // 边框宽和边框颜色
+                if (obj.has("strokeWidth") && obj.has("strokeColor")) {
+                    mk.stroke(
+                            new Stroke(
+                                    obj.getInt("strokeWidth"),
+                                    obj.getInt("strokeColor")
+                            )
+                    );
+                }
+
+                if ( obj.has("zIndex") ){
+                    mk.zIndex(obj.getInt("zIndex"));
+                }
+                if ( obj.has("visible") ){
+                    mk.visible(obj.getBoolean("visible"));
+                }
+                option = mk;
+            } else if( type.equalsIgnoreCase("mark")){
                 LatLng center = new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude"));
                 MarkerOptions mk = new MarkerOptions().position(center);
 //                Bitmap bitmap = BitmapDescriptorFactory.fromAsset(obj.getString("icon")).getBitmap();
