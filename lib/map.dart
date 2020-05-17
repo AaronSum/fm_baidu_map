@@ -16,7 +16,7 @@ class FmBaiduMap {
   MethodChannel _eventChannel;
   String _name;
 
-  /// 构造
+  /// 构造`
   FmBaiduMap() {
     var uuid = new Uuid();
     _name = uuid.v1();
