@@ -240,11 +240,11 @@ public class FmBaiduMapView{
         m.put("rotate",mapStatus.rotate);
         m.put("screenX",mapStatus.targetScreen.x);
         m.put("screenY",mapStatus.targetScreen.y);
+        double latSpan = mapStatus.bound.northeast.latitude - mapStatus.bound.southwest.latitude;
+        double lngSpan = mapStatus.bound.northeast.longitude - mapStatus.bound.southwest.longitude;
         // new
-        m.put("neLat",mapStatus.bound.northeast.latitude);
-        m.put("neLng",mapStatus.bound.northeast.longitude);
-        m.put("swLat",mapStatus.bound.southwest.latitude);
-        m.put("swLng",mapStatus.bound.southwest.longitude);
+        m.put("latSpan",mapStatus.latSpan);
+        m.put("latSpan",mapStatus.latSpan);
 
         _ftb.invokeMethod(name,m);
     }

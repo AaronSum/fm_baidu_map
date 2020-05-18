@@ -56,6 +56,65 @@
 }
 @end
 
+@implementation FmPolygon{
+    BMKPolygonView* _view;
+    BOOL _visible;
+}
+
+@synthesize name = _name;
+@synthesize layer = _layer;
+@synthesize config = _config;
+@synthesize mapView = _mapView;
+@synthesize registrar = _registrar;
+
+-(void)remove{
+    [_mapView removeOverlay:self];
+}
+-(void)setVisible:(BOOL)visible{
+    if ( _visible == YES ){
+        if ( visible == YES ){
+            return;
+        }
+        _visible = visible;
+        [_mapView removeOverlay:self];
+    }else{
+        if ( visible == NO ){
+            return;
+        }
+        _visible = visible;
+        [_mapView addOverlay:self];
+    }
+}
+// 重写此方法并返回YES是让overlay总是绘制,否则只绘制可见区域
+//-(BOOL)intersectsMapRect:(BMKMapRect)mapRect{
+//    return YES;
+//}
+-(UIView*)view{
+    if ( _view ){
+        return _view;
+    }
+    _view = [[BMKPolygonView alloc] initWithOverlay:self];
+    if ( [_config objectForKey:@"fillColor"] ){
+        NSInteger c = [[_config objectForKey:@"fillColor"] integerValue];
+        _view.fillColor =UIColorFromRGB(c);
+    }
+    if ( [_config objectForKey:@"strokeColor"] ){
+        NSInteger c = [[_config objectForKey:@"strokeColor"] integerValue];
+        _view.strokeColor =UIColorFromRGB(c);
+    }
+    if ( [_config objectForKey:@"strokeWidth"] ){
+        _view.lineWidth = [[_config objectForKey:@"strokeWidth"] floatValue];
+    }else{
+        _view.lineWidth = 1.0;
+    }
+    if ( [_config objectForKey:@"dottedLine"] ){
+        _view.lineDash = [[_config objectForKey:@"dottedLine"] boolValue];
+    }
+    _visible = YES;
+    return _view;
+}
+@end
+
 @implementation FmMarkerAnnotation{
     BMKAnnotationView* _view;
 }

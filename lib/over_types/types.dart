@@ -69,8 +69,8 @@ class FmMapStatusInfo {
   // 坐标点
   FmMapPoint point;
 
-  FmMapPoint northeast;
-  FmMapPoint southwest;
+  double latSpan;
+  double lngSpan;
   // 缩放
   double zoom;
   // 俯瞰
@@ -90,8 +90,8 @@ class FmMapStatusInfo {
     // 纬度
     point.longitude = m["longitude"];
 
-    northeast = FmMapPoint(latitude: m['neLat'], longitude: m['neLng']);
-    southwest = FmMapPoint(latitude: m['swLat'], longitude: m['swLng']);
+    latSpan =  m["latSpan"];
+    lngSpan =  m["lngSpan"];
 
     zoom = m["zoom"];
     overlook = m["overlook"];

@@ -31,6 +31,12 @@
 
 @end
 
+// 多边形
+@interface FmPolygon : BMKPolygon<FmOverlayItemBase>
+// 获取视图
+-(UIView*)view;
+
+@end
 // 标注
 @interface FmMarkerAnnotation : BMKPointAnnotation<FmOverlayItemBase>
 // 获取视图

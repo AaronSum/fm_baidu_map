@@ -17,3 +17,6 @@ add types
 publish
 
 * TODO: Describe initial release.
+- IOS 定位 issue (定位返回city)
+- IOS addOverlays 支持 polygon
+- 事件返回 加入对角线坐标

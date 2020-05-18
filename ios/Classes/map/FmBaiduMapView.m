@@ -42,7 +42,10 @@
                           @(mapView.zoomLevel),@"zoom",
                           @(mapView.overlooking+0.0),@"overlook",
                           @(mapView.rotation+0.0),@"rotate",
+                          @(mapView.region.span.latitudeDelta+0.0),@"latSpan",
+                          @(mapView.region.span.longitudeDelta+0.0),@"lngSpan",
                           nil];
+    
     [_invoker invokeMethod:name arg:dict];
 }
 - (void)mapView:(BMKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
@@ -189,6 +192,24 @@
         }
         FmPolyline* item = [[FmPolyline alloc] init];
         [item setPolylineWithCoordinates:coor count:size];
+        item.registrar = _registrar;
+        item.config = arg;
+        item.name = [arg objectForKey:@"name"];
+        item.layer = [arg objectForKey:@"layer"];
+        item.mapView = _mapView;
+        [mg add:[arg objectForKey:@"id"] overlay:item];
+        [_mapView addOverlay:item];
+    }else if ( [type isEqualToString:@"polygon"] ){
+        NSMutableArray* points = [arg objectForKey:@"points"];
+        NSUInteger size = [points count];
+        CLLocationCoordinate2D coor[size];
+        for( NSUInteger i=0; i<size; ++i ){
+            NSMutableDictionary* item = [points objectAtIndex:i];
+            coor[i].latitude = [[item objectForKey:@"latitude"] doubleValue];
+            coor[i].longitude = [[item objectForKey:@"longitude"] doubleValue];
+        }
+        FmPolygon* item = [[FmPolygon alloc] init];
+        [item setPolygonWithCoordinates:coor count:size];
         item.registrar = _registrar;
         item.config = arg;
         item.name = [arg objectForKey:@"name"];
