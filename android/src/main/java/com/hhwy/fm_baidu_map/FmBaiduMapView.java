@@ -243,8 +243,8 @@ public class FmBaiduMapView{
         double latSpan = mapStatus.bound.northeast.latitude - mapStatus.bound.southwest.latitude;
         double lngSpan = mapStatus.bound.northeast.longitude - mapStatus.bound.southwest.longitude;
         // new
-        m.put("latSpan",mapStatus.latSpan);
-        m.put("latSpan",mapStatus.latSpan);
+        m.put("latSpan",latSpan);
+        m.put("lngSpan",lngSpan);
 
         _ftb.invokeMethod(name,m);
     }
