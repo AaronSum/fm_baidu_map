@@ -1,16 +1,26 @@
 #include "FmBaiduLocationImpClientBaidu.h"
-#import <BMKLocationKit/BMKLocationComponent.h>
 #import <CoreLocation/CoreLocation.h>
-@interface FmBaiduLocationImpClientBaidu()<CLLocationManagerDelegate,BMKLocationManagerDelegate>
+
+
+#import <BaiduMapAPI_Base/BMKBaseComponent.h>
+#import <BMKLocationKit/BMKLocationComponent.h>
+#import <BMKLocationKit/BMKLocationManager.h>
+
+@interface FmBaiduLocationImpClientBaidu()<CLLocationManagerDelegate,BMKLocationManagerDelegate, BMKLocationAuthDelegate>
+
+@property (nonatomic, strong)     FmToolsBase* invoker;
+
+@property (nonatomic, strong) BMKMapManager *mapManager;
+
 @end
+
 @implementation FmBaiduLocationImpClientBaidu{
     BMKLocationManager *_locationManager;
     CLLocationManager* locationManagerPer;
-    FmToolsBase* _invoker;
 }
 
 -(id)initWithRegist:(NSObject<FlutterPluginRegistrar>*)registrar name:(NSString*)name{
-    _invoker = [[FmToolsBase alloc] initWithRegist:registrar name:name imp:self];
+    self.invoker = [[FmToolsBase alloc] initWithRegist:registrar name:name imp:self];
     return self;
 }
 /**
@@ -32,9 +42,9 @@
                                               cancelButtonTitle:@"确定"
                                               otherButtonTitles:nil];
         [alert show];
-//        [alert release];
+        //        [alert release];
     }else{
-//        emit FmMapView_M::g_mapLocation->receiveLoctionError(QString::fromNSString([error localizedDescription]));
+        //        emit FmMapView_M::g_mapLocation->receiveLoctionError(QString::fromNSString([error localizedDescription]));
     }
 }
 - (NSObject*)start{
@@ -66,6 +76,28 @@
     return false;
 }
 - (void)initInstance {
+    
+    // 要使用百度地图，请先启动BaiduMapManager
+    self.mapManager = [[BMKMapManager alloc]init];
+    
+    /**
+     *百度地图SDK所有接口均支持百度坐标（BD09）和国测局坐标（GCJ02），用此方法设置您使用的坐标类型.
+     *默认是BD09（BMK_COORDTYPE_BD09LL）坐标.
+     *如果需要使用GCJ02坐标，需要设置CoordinateType为：BMK_COORDTYPE_COMMON.
+     */
+    if ([BMKMapManager setCoordinateTypeUsedInBaiduMapSDK:BMK_COORDTYPE_BD09LL]) {
+        NSLog(@"经纬度类型设置成功");
+    } else {
+        NSLog(@"经纬度类型设置失败");
+    }
+    BOOL ret = [_mapManager start:@"uEYq6NGO3nSKNaZzYERYhEoeKVe910iL" generalDelegate:nil];
+    
+    if (!ret) {
+        NSLog(@"manager start failed!");
+    }
+    
+
+    //初始化实例
     _locationManager = [[BMKLocationManager alloc] init];
     //设置返回位置的坐标系类型
     _locationManager.coordinateType = BMKLocationCoordinateTypeBMK09LL;
@@ -78,12 +110,14 @@
     //设置是否自动停止位置更新
     _locationManager.pausesLocationUpdatesAutomatically = NO;
     //设置是否允许后台定位
-    _locationManager.allowsBackgroundLocationUpdates = YES;
+    //_locationManager.allowsBackgroundLocationUpdates = YES;
     //设置位置获取超时时间
     _locationManager.locationTimeout = 10;
     //设置获取地址信息超时时间
     _locationManager.reGeocodeTimeout = 10;
-    _locationManager.delegate = self;
+    
+    [self initSDK];
+    
 }
 /**
  *  @brief 当定位发生错误时，会调用代理的此方法。
@@ -102,30 +136,58 @@
                           @(location.location.coordinate.latitude),@"latitude",
                           @(location.location.coordinate.longitude),@"longitude",
                           nil];
-//    [dict setValue:location.location.coordinate.latitude forKey:@"latitude"];
-//    [dict setValue:location.location.coordinate.longitude forKey:@"longitude"];
+    //    [dict setValue:location.location.coordinate.latitude forKey:@"latitude"];
+    //    [dict setValue:location.location.coordinate.longitude forKey:@"longitude"];
     //    HashMap<String, Object> jsonObject = new HashMap();
-//    jsonObject.put("coordType", "Baidu");
-//    jsonObject.put("time", System.currentTimeMillis());
-//    jsonObject.put("speed", bdLocation.getSpeed());
-//    jsonObject.put("altitude", bdLocation.getAltitude());
-//    jsonObject.put("latitude", bdLocation.getLatitude());
-//    jsonObject.put("longitude", bdLocation.getLongitude());
-//    jsonObject.put("bearing", bdLocation.getDirection());
-    [_invoker invokeMethod:@"onLocation" arg:dict];
+    //    jsonObject.put("coordType", "Baidu");
+    //    jsonObject.put("time", System.currentTimeMillis());
+    //    jsonObject.put("speed", bdLocation.getSpeed());
+    //    jsonObject.put("altitude", bdLocation.getAltitude());
+    //    jsonObject.put("latitude", bdLocation.getLatitude());
+    //    jsonObject.put("longitude", bdLocation.getLongitude());
+    //    jsonObject.put("bearing", bdLocation.getDirection());
+    [self.invoker invokeMethod:@"onLocation" arg:dict];
 }
 
-+ (void)initSDK :(NSString*)sdk{
+- (void)initSDK{
     //    R8lzapOh0YZDfE5x6OAtIzdGWpUS9nBx
-//    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:sdk authDelegate:self];
+    [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"uEYq6NGO3nSKNaZzYERYhEoeKVe910iL" authDelegate:self];
 }
 
 -(NSObject*)dispose{
     [_locationManager stopUpdatingLocation];
-    [_invoker dispose];
-    _invoker = nil;
+    [self.invoker dispose];
+    self.invoker = nil;
     _locationManager = nil;
     return nil;
+}
+
+
+#pragma mark --  BMKLocationAuthDelegate method
+- (void)onCheckPermissionState:(BMKLocationAuthErrorCode)iError {
+    
+    if (iError == BMKLocationAuthErrorSuccess) {
+        
+        
+        
+        __weak typeof(self) weakSelf = self;
+        [_locationManager requestLocationWithReGeocode:YES withNetworkState:YES completionBlock:^(BMKLocation * _Nullable location, BMKLocationNetworkState state, NSError * _Nullable error) {
+            
+            if (error) {
+                NSLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
+            }
+            if (location) {
+                //得到定位信息，添加annotation
+                
+                NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                                      @(location.location.coordinate.latitude),@"latitude",
+                                      @(location.location.coordinate.longitude),@"longitude",
+                                      nil];
+                
+                [weakSelf.invoker invokeMethod:@"onLocation" arg:dict];
+            }
+        }];
+    }
 }
 
 @end

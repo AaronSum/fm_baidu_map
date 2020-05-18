@@ -14,5 +14,5 @@
 
 -(NSObject*)dispose;
 
-+(void)initSDK:(NSString*)sdk;
+-(void)initSDK;
 @end
