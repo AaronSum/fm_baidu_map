@@ -12,3 +12,11 @@ fm_baidu_map
 
 
 ![效果图](./image1.jpg)
+
+
+
+* TODO: 
+- IOS 定位 issue (定位返回city)
+- IOS getDistance
+- IOS addOverlays 支持 polygon
+- 事件返回 加入对角线坐标
