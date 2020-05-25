@@ -3,8 +3,12 @@
 
 @interface FmBaiduMapPluginImp: NSObject
 
--(id)initWithRegist:(NSObject<FlutterPluginRegistrar>*)registrar;
+-(id)initWithRegist:(NSObject<FlutterPluginRegistrar> *)registrar;
 
--(void)newInstanceLocation:(NSMutableDictionary*)arg result:(FlutterResult)result;
-+(void)initSDK;
+-(void)newInstanceLocation:(NSMutableDictionary *)arg result:(FlutterResult)result;
+
+
+- (void)getDistance:(NSDictionary *)arg result:(FlutterResult)result;
+
++ (void)initSDK;
 @end

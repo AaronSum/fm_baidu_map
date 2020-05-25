@@ -1,14 +1,12 @@
 #include "FmBaiduLocationImpClientBaidu.h"
 #import <CoreLocation/CoreLocation.h>
-
-
 #import <BaiduMapAPI_Base/BMKBaseComponent.h>
 #import <BMKLocationKit/BMKLocationComponent.h>
 #import <BMKLocationKit/BMKLocationManager.h>
 
-@interface FmBaiduLocationImpClientBaidu()<CLLocationManagerDelegate,BMKLocationManagerDelegate, BMKLocationAuthDelegate>
+@interface FmBaiduLocationImpClientBaidu() <CLLocationManagerDelegate, BMKLocationManagerDelegate, BMKLocationAuthDelegate>
 
-@property (nonatomic, strong)     FmToolsBase* invoker;
+@property (nonatomic, strong) FmToolsBase *invoker;
 
 @property (nonatomic, strong) BMKMapManager *mapManager;
 
@@ -16,10 +14,11 @@
 
 @implementation FmBaiduLocationImpClientBaidu{
     BMKLocationManager *_locationManager;
-    CLLocationManager* locationManagerPer;
+    CLLocationManager *locationManagerPer;
 }
 
--(id)initWithRegist:(NSObject<FlutterPluginRegistrar>*)registrar name:(NSString*)name{
+-(id)initWithRegist:(NSObject<FlutterPluginRegistrar> *)registrar name:(NSString *)name {
+    
     self.invoker = [[FmToolsBase alloc] initWithRegist:registrar name:name imp:self];
     return self;
 }
@@ -28,11 +27,11 @@
  *@param mapView 地图View
  *@param error 错误号，参考CLError.h中定义的错误号
  */
-- (void)didFailToLocateUserWithError:(NSError *)error
-{
+- (void)didFailToLocateUserWithError:(NSError *)error {
     NSLog(@"location error:%@", [error localizedDescription]);
-    if(error.code == 0)
+    if(error.code == 0) {
         return;
+    }
     
     int stat = [CLLocationManager authorizationStatus];
     if(stat == kCLAuthorizationStatusNotDetermined || stat == kCLAuthorizationStatusRestricted || stat == kCLAuthorizationStatusDenied){
@@ -43,12 +42,12 @@
                                               otherButtonTitles:nil];
         [alert show];
         //        [alert release];
-    }else{
+    } else {
         //        emit FmMapView_M::g_mapLocation->receiveLoctionError(QString::fromNSString([error localizedDescription]));
     }
 }
-- (NSObject*)start{
-    if([CLLocationManager locationServicesEnabled]){
+- (NSObject *)start {
+    if([CLLocationManager locationServicesEnabled]) {
         locationManagerPer = [[CLLocationManager alloc] init];
         
         locationManagerPer.pausesLocationUpdatesAutomatically = NO ;
@@ -61,21 +60,21 @@
     [_locationManager startUpdatingLocation];
     return @(true);
 }
-- (NSObject*)stop{
+-(NSObject *)stop {
     [_locationManager stopUpdatingLocation];
     return @(true);
 }
--(NSObject*)isStarted{
+-(NSObject *)isStarted {
     BOOL isStartes = [self locating];
     return @(isStartes);
 }
-- (BOOL)locating{
+-(BOOL)locating {
     if ([CLLocationManager locationServicesEnabled] && [CLLocationManager authorizationStatus] != kCLAuthorizationStatusDenied) {
         return true;
     }
     return false;
 }
-- (void)initInstance {
+-(void)initInstance {
     
     // 要使用百度地图，请先启动BaiduMapManager
     self.mapManager = [[BMKMapManager alloc]init];
@@ -96,7 +95,7 @@
         NSLog(@"manager start failed!");
     }
     
-
+    
     //初始化实例
     _locationManager = [[BMKLocationManager alloc] init];
     //设置返回位置的坐标系类型
@@ -120,21 +119,19 @@
     
 }
 /**
- *  @brief 当定位发生错误时，会调用代理的此方法。
- *  @param manager 定位 BMKLocationManager 类。
- *  @param error 返回的错误，参考 CLError 。
+  * @brief 当定位发生错误时，会调用代理的此方法。
+  * @param manager 定位 BMKLocationManager 类。
+  * @param error 返回的错误，参考 CLError 。
  */
-- (void)BMKLocationManager:(BMKLocationManager * _Nonnull)manager didFailWithError:(NSError * _Nullable)error
-{
+-(void)BMKLocationManager:(BMKLocationManager *_Nonnull)manager didFailWithError:(NSError  *_Nullable)error {
     NSLog(@"serial loc error = %@", error);
 }
 
 
-- (void)BMKLocationManager:(BMKLocationManager * _Nonnull)manager didUpdateLocation:(BMKLocation * _Nullable)location orError:(NSError * _Nullable)error
-{
-    NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
-                          @(location.location.coordinate.latitude),@"latitude",
-                          @(location.location.coordinate.longitude),@"longitude",
+-(void)BMKLocationManager:(BMKLocationManager *_Nonnull)manager didUpdateLocation:(BMKLocation *_Nullable)location orError:(NSError *_Nullable)error {
+    NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                          @(location.location.coordinate.latitude), @"latitude",
+                          @(location.location.coordinate.longitude), @"longitude",
                           nil];
     //    [dict setValue:location.location.coordinate.latitude forKey:@"latitude"];
     //    [dict setValue:location.location.coordinate.longitude forKey:@"longitude"];
@@ -149,12 +146,12 @@
     [self.invoker invokeMethod:@"onLocation" arg:dict];
 }
 
-- (void)initSDK{
+-(void)initSDK {
     //    R8lzapOh0YZDfE5x6OAtIzdGWpUS9nBx
     [[BMKLocationAuth sharedInstance] checkPermisionWithKey:@"uEYq6NGO3nSKNaZzYERYhEoeKVe910iL" authDelegate:self];
 }
 
--(NSObject*)dispose{
+-(NSObject *)dispose {
     [_locationManager stopUpdatingLocation];
     [self.invoker dispose];
     self.invoker = nil;
@@ -164,14 +161,12 @@
 
 
 #pragma mark --  BMKLocationAuthDelegate method
-- (void)onCheckPermissionState:(BMKLocationAuthErrorCode)iError {
+-(void)onCheckPermissionState:(BMKLocationAuthErrorCode)iError {
     
     if (iError == BMKLocationAuthErrorSuccess) {
-        
-        
-        
+                
         __weak typeof(self) weakSelf = self;
-        [_locationManager requestLocationWithReGeocode:YES withNetworkState:YES completionBlock:^(BMKLocation * _Nullable location, BMKLocationNetworkState state, NSError * _Nullable error) {
+        [_locationManager requestLocationWithReGeocode:YES withNetworkState:YES completionBlock:^(BMKLocation  *_Nullable location, BMKLocationNetworkState state, NSError  *_Nullable error) {
             
             if (error) {
                 NSLog(@"locError:{%ld - %@};", (long)error.code, error.localizedDescription);
@@ -179,7 +174,7 @@
             if (location) {
                 //得到定位信息，添加annotation
                 
-                NSDictionary* dict = [NSDictionary dictionaryWithObjectsAndKeys:
+                NSDictionary *dict = [NSDictionary dictionaryWithObjectsAndKeys:
                                       @(location.location.coordinate.latitude),@"latitude",
                                       @(location.location.coordinate.longitude),@"longitude",
                                       nil];

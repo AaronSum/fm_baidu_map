@@ -1,18 +1,22 @@
 #import <Flutter/Flutter.h>
 #import <UIKit/UIKit.h>
 #import "FmBaiduLocationImpClient.h"
+
+
 @interface FmBaiduLocationImpClientBaidu: NSObject
--(id)initWithRegist:(NSObject<FlutterPluginRegistrar>*)registrar name:(NSString*)name;
 
--(NSObject*) start;
+-(id)initWithRegist:(NSObject<FlutterPluginRegistrar> *)registrar name:(NSString*)name;
 
--(NSObject*) stop;
+-(NSObject *)start;
 
--(NSObject*) isStarted;
+-(NSObject *)stop;
 
--(void) initInstance;
+-(NSObject *)isStarted;
 
--(NSObject*)dispose;
+-(void)initInstance;
+
+-(NSObject *)dispose;
 
 -(void)initSDK;
+
 @end
