@@ -652,7 +652,7 @@ public class FmBaiduMapView{
                     mk.anchor(0.5f,0.5f);
                 }
                 option = mk;
-                System.out.println(option);
+                // System.out.println(option);
             }else if( type.equalsIgnoreCase("text")){
                 LatLng llText = new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude"));
                 //构建TextOptions对象
