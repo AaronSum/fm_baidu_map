@@ -64,12 +64,12 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     //当mapView即将被隐藏的时候调用，存储当前mapView的状态
-    [_mapView viewWillDisappear];
-    [_factory remove: _name];
-    _invoker = nil;
-    _mapView = nil;
-    _overlays = nil;
-    _factory = nil;
+//    [_mapView viewWillDisappear];
+//    [_factory remove: _name];
+//    _invoker = nil;
+//    _mapView = nil;
+//    _overlays = nil;
+//    _factory = nil;
 }
 
 - (id)initWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar name:(NSString*)name factory:(FmBaiduMapViewFactory*)factory {
