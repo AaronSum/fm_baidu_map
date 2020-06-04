@@ -16,7 +16,7 @@ class FmBaiduMap {
   MethodChannel _eventChannel;
   String _name;
 
-  /// 构造`
+  /// 构造
   FmBaiduMap() {
     var uuid = new Uuid();
     _name = uuid.v1();
@@ -39,12 +39,18 @@ class FmBaiduMap {
     FmMapPoint p1,
     FmMapPoint p2,
   ) async {
-    return await _channel.invokeMethod("getDistance", {
-      "latitude1": p1.latitude,
-      "longitude1": p1.longitude,
-      "latitude2": p2.latitude,
-      "longitude2": p2.longitude,
-    });
+    try {
+      return await _channel.invokeMethod("getDistance", {
+        "latitude1": p1.latitude,
+        "longitude1": p1.longitude,
+        "latitude2": p2.latitude,
+        "longitude2": p2.longitude,
+      });
+    } catch (e) {
+      print(e);
+
+      return 100;
+    }
   }
 
   /*
@@ -86,25 +92,38 @@ class FmBaiduMap {
    */
   Future<FmMapOverlays> addOverlay(FmMapOverlays object) async {
     object.map = this;
-    await _eventChannel.invokeMethod("addOverlays", {
-      "objects": [object.toMap()],
-    });
-    return object;
+
+    try {
+      await _eventChannel.invokeMethod("addOverlays", {
+        "objects": [object.toMap()],
+      });
+      return object;
+    } catch (e) {
+      print(e);
+
+      return null;
+    }
   }
 
   /*
    * 添加一组标注
    */
   Future<List<FmMapOverlays>> addOverlays(List<FmMapOverlays> objects) async {
-    await _eventChannel.invokeMethod(
-      "addOverlays",
-      {"objects": FmMapOverlays.toList(objects)},
-    );
-    FmBaiduMap t = this;
-    objects.forEach((it) {
-      it.map = t;
-    });
-    return objects;
+    try {
+      await _eventChannel.invokeMethod(
+        "addOverlays",
+        {"objects": FmMapOverlays.toList(objects)},
+      );
+      FmBaiduMap t = this;
+      objects.forEach((it) {
+        it.map = t;
+      });
+      return objects;
+    } catch (e) {
+      print(e);
+
+      return null;
+    }
   }
 
   /*
@@ -118,10 +137,14 @@ class FmBaiduMap {
    * 更新多条记录
    */
   Future updates(List<FmMapOverlays> objects) async {
-    await _eventChannel.invokeMethod(
-      "updateOverlays",
-      {"objects": FmMapOverlays.toList(objects)},
-    );
+    try {
+      await _eventChannel.invokeMethod(
+        "updateOverlays",
+        {"objects": FmMapOverlays.toList(objects)},
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
@@ -135,16 +158,24 @@ class FmBaiduMap {
     if (layer != null) {
       m["layer"] = layer;
     }
-    await _eventChannel.invokeMethod("removeOverlays", m);
+
+    try {
+      await _eventChannel.invokeMethod("removeOverlays", m);
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
    * 移除所有标注
    */
   Future clear() async {
-    await _eventChannel.invokeMethod("clear");
+    try {
+      await _eventChannel.invokeMethod("clear");
+    } catch (e) {
+      print(e);
+    }
   }
-
 
   /*
    * 设置标注的顺序
@@ -157,7 +188,12 @@ class FmBaiduMap {
     if (layer != null) {
       m["layer"] = layer;
     }
-    await _eventChannel.invokeMethod("setOverlaysIndex", m);
+
+    try {
+      await _eventChannel.invokeMethod("setOverlaysIndex", m);
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
@@ -175,7 +211,12 @@ class FmBaiduMap {
     if (layer != null) {
       m["layer"] = layer;
     }
-    await _eventChannel.invokeMethod("setOverlaysVisible", m);
+
+    try {
+      await _eventChannel.invokeMethod("setOverlaysVisible", m);
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
@@ -192,12 +233,16 @@ class FmBaiduMap {
     double direction = 0,
     double accuracy = 500,
   }) async {
-    await _eventChannel.invokeMethod("setCurrentPoint", {
-      "latitude": point.latitude,
-      "longitude": point.longitude,
-      "direction": direction,
-      "accuracy": accuracy
-    });
+    try {
+      await _eventChannel.invokeMethod("setCurrentPoint", {
+        "latitude": point.latitude,
+        "longitude": point.longitude,
+        "direction": direction,
+        "accuracy": accuracy
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
@@ -215,13 +260,17 @@ class FmBaiduMap {
     double rotate = 360,
     double zoom = 0,
   }) async {
-    await _eventChannel.invokeMethod("setCenter", {
-      "latitude": point.latitude,
-      "longitude": point.longitude,
-      "overlook": overlook,
-      "rotate": rotate,
-      "zoom": zoom
-    });
+    try {
+      await _eventChannel.invokeMethod("setCenter", {
+        "latitude": point.latitude,
+        "longitude": point.longitude,
+        "overlook": overlook,
+        "rotate": rotate,
+        "zoom": zoom
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   /*
@@ -258,11 +307,13 @@ class FmBaiduMap {
   // public static final int MAP_TYPE_SATELLITE = 2;
   // public static final int MAP_TYPE_NONE = 3;
   Future setMapType(int type) async {
-    await _eventChannel.invokeMethod(
-      "setMapType",
-      {
-        "type": type
-      },
-    );
+    try {
+      await _eventChannel.invokeMethod(
+        "setMapType",
+        {"type": type},
+      );
+    } catch (e) {
+      print(e);
+    }
   }
 }

@@ -30,12 +30,14 @@
     //将mapView添加到当前视图中
     [self setView: _mapView];
     //    [super.view addSubview:_mapView];
+    
+    [_mapView viewWillAppear];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear: animated];
     //当mapView即将被显示的时候调用，恢复之前存储的mapView状态
-    [_mapView viewWillAppear];
+    //    [_mapView viewWillAppear];
 }
 
 - (void) onMapStatus:(BMKMapView *)mapView name:(NSString*)name{
@@ -64,12 +66,15 @@
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear: animated];
     //当mapView即将被隐藏的时候调用，存储当前mapView的状态
-//    [_mapView viewWillDisappear];
-//    [_factory remove: _name];
-//    _invoker = nil;
-//    _mapView = nil;
-//    _overlays = nil;
-//    _factory = nil;
+    
+#if 0
+    [_mapView viewWillDisappear];
+    [_factory remove: _name];
+    _invoker = nil;
+    _mapView = nil;
+    _overlays = nil;
+    _factory = nil;
+#endif
 }
 
 - (id)initWithRegistrar:(NSObject<FlutterPluginRegistrar> *)registrar name:(NSString*)name factory:(FmBaiduMapViewFactory*)factory {
@@ -133,21 +138,21 @@
     result(@"");
     
     
-//    "latitude": point.latitude,
-//      "longitude": point.longitude,
-//      "overlook": overlook,
-//      "rotate": rotate,
-//      "zoom": zoom
+    //    "latitude": point.latitude,
+    //      "longitude": point.longitude,
+    //      "overlook": overlook,
+    //      "rotate": rotate,
+    //      "zoom": zoom
 }
 
 -(NSObject *)clear {
     
     [_mapView removeOverlays:_mapView.overlays];
     [_mapView removeAnnotations:_mapView.annotations];
-//    NSMutableArray *arr = [arg objectForKey:@"objects"];
-//    for(NSMutableDictionary *item in arr ){
-//        [self createOptions:item];
-//    }
+    //    NSMutableArray *arr = [arg objectForKey:@"objects"];
+    //    for(NSMutableDictionary *item in arr ){
+    //        [self createOptions:item];
+    //    }
     return @(YES);
 }
 
@@ -168,8 +173,20 @@
     if ([overlay conformsToProtocol:@protocol(FmOverlayItemBase)]) {
         NSObject<FmOverlayItemBase> *obj = overlay;
         return (BMKAnnotationView*) [obj view];
+        
+    } else if ([overlay isKindOfClass:[BMKPolygon class]]) {
+        
+        BMKPolygonView* polygonView = [[BMKPolygonView alloc] initWithOverlay:overlay];
+        polygonView.strokeColor =  [UIColor colorWithRed:((float)((48 & 0xFF0000) >> 16))/255.0
+                                                   green:((float)((162 & 0xFF00) >> 8))/255.0
+                                                    blue:((float)(241 & 0xFF))/255.0 alpha:1.0];
+        polygonView.fillColor =  [UIColor colorWithRed:((float)((48 & 0xFF0000) >> 16))/255.0
+                                                 green:((float)((162 & 0xFF00) >> 8))/255.0
+                                                  blue:((float)(241 & 0xFF))/255.0 alpha:0.1];
+        polygonView.lineWidth = 1.0;
+        
+        return polygonView;
     }
-    
     //    if ([overlay isKindOfClass:[BMKCircle class]]){
     //        BMKCircleView *circleView = [[BMKCircleView alloc] initWithOverlay:overlay];
     ////        circleView.fillColor = [[UIColor cyanColor] colorWithAlphaComponent:0.5];
@@ -222,6 +239,28 @@
         [mg add:[arg objectForKey:@"id"] overlay:item];
         [_mapView addOverlay:item];
     }else if ( [type isEqualToString:@"polygon"] ){
+        
+//        NSMutableArray *points = [arg objectForKey:@"points"];
+//        NSUInteger size = [points count];
+//        CLLocationCoordinate2D coor[size];
+//        for( NSUInteger i=0; i<size; ++i ){
+//            NSMutableDictionary *item = [points objectAtIndex:i];
+//            coor[i].latitude = [[item objectForKey:@"latitude"] doubleValue];
+//            coor[i].longitude = [[item objectForKey:@"longitude"] doubleValue];
+//        }
+//        FmPolygon *item = [[FmPolygon alloc] init];
+//        [item setPolygonWithCoordinates:coor count:size];
+//        item.registrar = _registrar;
+//        item.config = arg;
+//        item.name = [arg objectForKey:@"name"];
+//        item.layer = [arg objectForKey:@"layer"];
+//        //        item.view.backgroundColor = UIColor.redColor;
+//        item.mapView = _mapView;
+//        [mg add:[arg objectForKey:@"id"] overlay:item];
+//        [_mapView addOverlay:item];
+        
+        
+        
         NSMutableArray *points = [arg objectForKey:@"points"];
         NSUInteger size = [points count];
         CLLocationCoordinate2D coor[size];
@@ -230,15 +269,10 @@
             coor[i].latitude = [[item objectForKey:@"latitude"] doubleValue];
             coor[i].longitude = [[item objectForKey:@"longitude"] doubleValue];
         }
-        FmPolygon *item = [[FmPolygon alloc] init];
-        [item setPolygonWithCoordinates:coor count:size];
-        item.registrar = _registrar;
-        item.config = arg;
-        item.name = [arg objectForKey:@"name"];
-        item.layer = [arg objectForKey:@"layer"];
-        item.mapView = _mapView;
-        [mg add:[arg objectForKey:@"id"] overlay:item];
-        [_mapView addOverlay:item];
+           BMKPolygon* polygon = [BMKPolygon polygonWithCoordinates:coor count:size];
+        
+           [_mapView addOverlay:polygon];
+        
     }else if ( [type isEqualToString:@"mark"] || [type isEqualToString:@"park_marker"] ){
         FmMarkerAnnotation *item = [[FmMarkerAnnotation alloc]init];
         item.coordinate = CLLocationCoordinate2DMake([[arg objectForKey:@"latitude"] doubleValue], [[arg objectForKey:@"longitude"] doubleValue]);
