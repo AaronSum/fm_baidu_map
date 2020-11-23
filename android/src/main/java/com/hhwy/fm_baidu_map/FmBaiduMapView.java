@@ -2,6 +2,7 @@ package com.hhwy.fm_baidu_map;
 
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BaiduMapOptions;
+import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.CircleOptions;
 import com.baidu.mapapi.map.MapStatus;
@@ -33,6 +34,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -681,6 +684,60 @@ public class FmBaiduMapView{
                     txt.visible(obj.getBoolean("visible"));
                 }
                 option = txt;
+            }else if(type.equalsIgnoreCase("location_marker")){
+//                FmMapLocationMark(
+//                        id: 'item.parkId',
+//                        layer: 'location_marker',
+//                        icon: 'assets/images/${item.iconName}.png',
+//                        text: item.descStr,
+//                        textColor: 0xff000000,
+//                        textSize: 12,
+//                        anchorY: 0.8,
+//                        anchorX: 0.5,
+//                        point: FmMapPoint(
+//                        latitude: double.parse(item.lat),
+//                        longitude: double.parse(item.lng)))
+                LatLng center = new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude"));
+                MarkerOptions mk = new MarkerOptions().position(center);
+//                Bitmap bitmap = BitmapDescriptorFactory.fromAsset(obj.getString("icon")).getBitmap();
+                AssetManager assetManager = _ftb._registrar.context().getAssets();
+                String key = _ftb._registrar.lookupKeyForAsset(obj.getString("icon"));
+                //地点图标
+                Bitmap bitmap = null;
+                try {
+                    bitmap = BitmapFactory.decodeStream(assetManager.open(key));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if ( obj.has("scale") && obj.getDouble("scale")!=1.0 ){
+                    bitmap = _ftb.imageScale(bitmap,(float)obj.getDouble("scale"),(float)obj.getDouble("scale"));
+                }
+                if (obj.has("text")) {
+                    // 在图片上绘制文字
+                    float textSize =-1;
+                    if ( obj.has("textSize")){
+                        textSize = (float)obj.getInt("textSize");
+                    }
+                    int textColor = Color.BLACK;
+                    if ( obj.has("textColor")){
+                        textColor = obj.getInt("textColor");
+                    }
+                    bitmap = _ftb.textBitmap(bitmap,obj.getString("text"),textSize, textColor);
+                }
+                //构造自定义marker布局
+                //加载自定义marker
+                View popMarker = View.inflate(_view.getContext(), R.layout.layout_park_marker, null);
+                ImageView facilityIcon = popMarker.findViewById(R.id.facilityIcon);
+                facilityIcon.setImageBitmap(bitmap);
+                Bitmap markerLayout = getViewBitmap(popMarker);
+                BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(markerLayout);
+                mk.icon(bitmapDescriptor);
+                if ( obj.has("anchorX") && obj.has("anchorY")){
+                    mk.anchor((float)obj.getDouble("anchorX"),(float)obj.getDouble("anchorY"));
+                }else{
+                    mk.anchor(0.5f,0.5f);
+                }
+                option = mk;
             }
             // 在地图上显示
             if ( option != null && addToMap ) {
@@ -694,7 +751,29 @@ public class FmBaiduMapView{
         }
         return  null;
     }
+    /**
+     * 将View转换成Bitmap
+     * @param addViewContent
+     * @return
+     */
 
+    private Bitmap getViewBitmap(View addViewContent) {
+
+        addViewContent.setDrawingCacheEnabled(true);
+
+        addViewContent.measure(
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        addViewContent.layout(0, 0,
+                addViewContent.getMeasuredWidth(),
+                addViewContent.getMeasuredHeight());
+
+        addViewContent.buildDrawingCache();
+        Bitmap cacheBitmap = addViewContent.getDrawingCache();
+        Bitmap bitmap = Bitmap.createBitmap(cacheBitmap);
+
+        return bitmap;
+    }
     /**
      * 添加覆盖物
      * @param obj 配置

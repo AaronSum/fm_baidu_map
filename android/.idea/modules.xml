@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/fm_baidu_map.iml" filepath="$PROJECT_DIR$/fm_baidu_map.iml" />
+      <module fileurl="file://$PROJECT_DIR$/fm_baidu_map.iml" filepath="$PROJECT_DIR$/fm_baidu_map.iml" group="fm_baidu_map" />
     </modules>
   </component>
 </project>
