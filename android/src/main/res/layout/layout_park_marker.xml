@@ -10,8 +10,9 @@
         android:background="@drawable/park_marker_des"
         android:layout_width="wrap_content"
         android:textSize="12sp"
+        android:gravity="center_horizontal"
         android:layout_gravity="center_horizontal"
-        tools:text="长沙黄花机场"
+        tools:text="长沙黄花机场\n123"
         android:layout_height="wrap_content"/>
     <ImageView
         android:layout_gravity="center_horizontal"
