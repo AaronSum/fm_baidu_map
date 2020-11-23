@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="wrap_content"
-    android:layout_gravity="center_horizontal"
     android:layout_height="wrap_content">
 
     <TextView
@@ -11,11 +10,16 @@
         android:background="@drawable/park_marker_des"
         android:layout_width="wrap_content"
         android:textSize="12sp"
+        android:layout_gravity="center_horizontal"
         tools:text="长沙黄花机场"
         android:layout_height="wrap_content"/>
     <ImageView
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="2dp"
         android:id="@+id/facilityIcon"
+        tools:layout_width="24dp"
+        tools:layout_height="24dp"
+        tools:background="@android:color/holo_blue_bright"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </LinearLayout>
