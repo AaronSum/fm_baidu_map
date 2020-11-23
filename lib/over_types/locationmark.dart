@@ -97,7 +97,7 @@ class FmMapLocationMark extends FmMapOverlays {
   Map toMap() {
     Map option = {
       "id": id,
-      "type": "location_mark",
+      "type": "location_marker",
       "layer": layer,
       "visible": visible,
       "latitude": point.latitude,
