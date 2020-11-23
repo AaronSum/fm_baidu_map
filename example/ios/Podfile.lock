@@ -8,7 +8,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios-release`)
+  - Flutter (from `.symlinks/flutter/ios`)
   - fm_baidu_map (from `.symlinks/plugins/fm_baidu_map/ios`)
 
 SPEC REPOS:
@@ -18,7 +18,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios-release"
+    :path: ".symlinks/flutter/ios"
   fm_baidu_map:
     :path: ".symlinks/plugins/fm_baidu_map/ios"
 
@@ -30,4 +30,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: aff02bfeed411c636180d6812254b2daeea14d09
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.8.4

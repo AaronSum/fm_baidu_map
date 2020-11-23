@@ -192,6 +192,93 @@
 @end
 
 
+
+
+@implementation FmLocationAnnotation{
+    BMKAnnotationView* _view;
+}
+
+@synthesize name = _name;
+@synthesize layer = _layer;
+@synthesize config = _config;
+@synthesize mapView = _mapView;
+@synthesize registrar = _registrar;
+
+
+-(UIView*)view{
+    if ( _view ){
+        return _view;
+    }
+    static NSString *pointReuseIndentifier = @"pointReuseIndentifier";
+    BMKPinAnnotationView*annotationView = (BMKPinAnnotationView *)[_mapView dequeueReusableAnnotationViewWithIdentifier:pointReuseIndentifier];
+    if (annotationView == nil) {
+        annotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:self reuseIdentifier:pointReuseIndentifier];
+        annotationView.canShowCallout = NO;
+    }
+    if ( [_config objectForKey:@"icon"] ){
+        NSString* key = [_registrar lookupKeyForAsset:[_config objectForKey:@"icon"]];
+        NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
+        UIImage* image =[UIImage imageWithContentsOfFile:path];
+//        if ( [_config objectForKey:@"text"] ){
+//            image = [self getTextBitmap:image
+//                text:[_config objectForKey:@"text"]
+//                textSize:[[_config objectForKey:@"textSize"] floatValue]
+//                textColor:[[_config objectForKey:@"textColor"] integerValue]
+//            ];
+//        }
+        double xOffset = 0;
+        double yOffset = 0;
+        if ( [_config objectForKey:@"anchorX"] ){
+            xOffset =[[_config objectForKey:@"anchorX"] doubleValue]-0.5;
+        }
+        if ( [_config objectForKey:@"anchorY"] ){
+            yOffset =[[_config objectForKey:@"anchorY"] doubleValue]-0.5;
+        }
+        double fixelW = CGImageGetWidth(image.CGImage);
+        double fixelH = CGImageGetHeight(image.CGImage);
+        annotationView.centerOffset =CGPointMake(xOffset * fixelW, -yOffset * fixelH);
+        annotationView.image = nil;
+        
+        
+        UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
+        imageView.frame = CGRectMake(0, 40, 30, 30);
+        [annotationView addSubview:imageView];
+        
+       
+
+    }
+    
+    if ( [_config objectForKey:@"text"] ){
+           //            image = [self getTextBitmap:image
+           //                text:[_config objectForKey:@"text"]
+           //                textSize:[[_config objectForKey:@"textSize"] floatValue]
+           //                textColor:[[_config objectForKey:@"textColor"] integerValue]
+           //            ];
+           //        }
+           UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
+           textLabel.textColor = [UIColor redColor];
+        textLabel.text =[_config objectForKey:@"text"];
+        [annotationView addSubview:textLabel];
+
+        
+    }
+    
+    _view = annotationView;
+    return _view;
+}
+
+-(void)remove{
+    [_mapView removeAnnotation:self];
+}
+-(void)setVisible:(BOOL)visible{
+    if ( _view ){
+        _view.hidden = !visible;
+    }
+}
+@end
+
+
+
 @implementation FmTextAnnotation{
     BMKAnnotationView* _view;
 }

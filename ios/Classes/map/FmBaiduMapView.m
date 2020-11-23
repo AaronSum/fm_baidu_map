@@ -286,7 +286,21 @@
         item.mapView = _mapView;
         [mg add:[arg objectForKey:@"id"] overlay:item];
         [_mapView addAnnotation:item];
-    }
+    
+    }else if ( [type isEqualToString:@"location_marker"] ){
+           FmMarkerAnnotation *item = [[FmMarkerAnnotation alloc]init];
+           item.coordinate = CLLocationCoordinate2DMake([[arg objectForKey:@"latitude"] doubleValue], [[arg objectForKey:@"longitude"] doubleValue]);
+           if ([arg objectForKey:@"title"]) {
+               item.title = [[arg objectForKey:@"title"] stringValue];
+           }
+           item.registrar = _registrar;
+           item.config = arg;
+           item.name = [arg objectForKey:@"name"];
+           item.layer = [arg objectForKey:@"layer"];
+           item.mapView = _mapView;
+           [mg add:[arg objectForKey:@"id"] overlay:item];
+           [_mapView addAnnotation:item];
+       }
 }
 
 -(void)updateOverlays:(NSMutableDictionary *)arg result:(FlutterResult)result{

@@ -45,6 +45,15 @@
 
 @end
 
+
+// 位置标注
+@interface FmLocationAnnotation : BMKPointAnnotation<FmOverlayItemBase>
+// 获取视图
+-(UIView*)view;
+-(void)remove;
+
+@end
+
 // 文字
 @interface FmTextAnnotation : BMKPointAnnotation<FmOverlayItemBase>
 // 获取视图
