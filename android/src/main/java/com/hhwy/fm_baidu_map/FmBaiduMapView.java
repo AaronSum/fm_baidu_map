@@ -34,8 +34,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -685,18 +687,6 @@ public class FmBaiduMapView{
                 }
                 option = txt;
             }else if(type.equalsIgnoreCase("location_marker")){
-//                FmMapLocationMark(
-//                        id: 'item.parkId',
-//                        layer: 'location_marker',
-//                        icon: 'assets/images/${item.iconName}.png',
-//                        text: item.descStr,
-//                        textColor: 0xff000000,
-//                        textSize: 12,
-//                        anchorY: 0.8,
-//                        anchorX: 0.5,
-//                        point: FmMapPoint(
-//                        latitude: double.parse(item.lat),
-//                        longitude: double.parse(item.lng)))
                 LatLng center = new LatLng(obj.getDouble("latitude"), obj.getDouble("longitude"));
                 MarkerOptions mk = new MarkerOptions().position(center);
 //                Bitmap bitmap = BitmapDescriptorFactory.fromAsset(obj.getString("icon")).getBitmap();
@@ -712,23 +702,16 @@ public class FmBaiduMapView{
                 if ( obj.has("scale") && obj.getDouble("scale")!=1.0 ){
                     bitmap = _ftb.imageScale(bitmap,(float)obj.getDouble("scale"),(float)obj.getDouble("scale"));
                 }
-                if (obj.has("text")) {
-                    // 在图片上绘制文字
-                    float textSize =-1;
-                    if ( obj.has("textSize")){
-                        textSize = (float)obj.getInt("textSize");
-                    }
-                    int textColor = Color.BLACK;
-                    if ( obj.has("textColor")){
-                        textColor = obj.getInt("textColor");
-                    }
-                    bitmap = _ftb.textBitmap(bitmap,obj.getString("text"),textSize, textColor);
-                }
+
                 //构造自定义marker布局
                 //加载自定义marker
                 View popMarker = View.inflate(_view.getContext(), R.layout.layout_park_marker, null);
                 ImageView facilityIcon = popMarker.findViewById(R.id.facilityIcon);
+                TextView textDes = popMarker.findViewById(R.id.text_des);
                 facilityIcon.setImageBitmap(bitmap);
+                if(obj.has("text")){
+                    textDes.setText(Html.fromHtml(obj.getString("text")));
+                }
                 Bitmap markerLayout = getViewBitmap(popMarker);
                 BitmapDescriptor bitmapDescriptor = BitmapDescriptorFactory.fromBitmap(markerLayout);
                 mk.icon(bitmapDescriptor);
