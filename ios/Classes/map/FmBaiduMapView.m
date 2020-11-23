@@ -288,7 +288,7 @@
         [_mapView addAnnotation:item];
     
     }else if ( [type isEqualToString:@"location_marker"] ){
-           FmMarkerAnnotation *item = [[FmMarkerAnnotation alloc]init];
+           FmLocationAnnotation *item = [[FmLocationAnnotation alloc]init];
            item.coordinate = CLLocationCoordinate2DMake([[arg objectForKey:@"latitude"] doubleValue], [[arg objectForKey:@"longitude"] doubleValue]);
            if ([arg objectForKey:@"title"]) {
                item.title = [[arg objectForKey:@"title"] stringValue];

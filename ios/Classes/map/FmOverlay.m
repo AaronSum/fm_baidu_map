@@ -215,17 +215,35 @@
         annotationView = [[BMKPinAnnotationView alloc] initWithAnnotation:self reuseIdentifier:pointReuseIndentifier];
         annotationView.canShowCallout = NO;
     }
+    
+    UIView *bgView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 80, 44)];
+    bgView.backgroundColor = [UIColor whiteColor];
+    
+    bgView.layer.masksToBounds = YES;
+    bgView.layer.cornerRadius = 4;
+    bgView.layer.borderColor = [UIColor redColor].CGColor;
+    bgView.layer.borderWidth = 0.5;
+    
+    [annotationView addSubview:bgView];
+
+    if ( [_config objectForKey:@"text"] ) {
+                
+        UILabel *label = [[UILabel alloc] initWithFrame:bgView.bounds];
+        label.numberOfLines = 2;
+        label.textAlignment = NSTextAlignmentCenter;
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithData:[[_config objectForKey:@"text"] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+        label.attributedText = attrStr;
+        label.font = [UIFont systemFontOfSize:14];
+        [bgView addSubview:label];
+        
+    }
+    
+    
     if ( [_config objectForKey:@"icon"] ){
         NSString* key = [_registrar lookupKeyForAsset:[_config objectForKey:@"icon"]];
         NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
         UIImage* image =[UIImage imageWithContentsOfFile:path];
-//        if ( [_config objectForKey:@"text"] ){
-//            image = [self getTextBitmap:image
-//                text:[_config objectForKey:@"text"]
-//                textSize:[[_config objectForKey:@"textSize"] floatValue]
-//                textColor:[[_config objectForKey:@"textColor"] integerValue]
-//            ];
-//        }
+
         double xOffset = 0;
         double yOffset = 0;
         if ( [_config objectForKey:@"anchorX"] ){
@@ -234,34 +252,17 @@
         if ( [_config objectForKey:@"anchorY"] ){
             yOffset =[[_config objectForKey:@"anchorY"] doubleValue]-0.5;
         }
-        double fixelW = CGImageGetWidth(image.CGImage);
-        double fixelH = CGImageGetHeight(image.CGImage);
-        annotationView.centerOffset =CGPointMake(xOffset * fixelW, -yOffset * fixelH);
+        double fixelW = 80.0;
+        double fixelH = bgView.frame.size.height + image.size.height;
+        
+        annotationView.centerOffset =CGPointMake(-fixelW / 2, -fixelH);
         annotationView.image = nil;
         
-        
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.frame = CGRectMake(0, 40, 30, 30);
+        imageView.frame = CGRectMake(bgView.center.x - 18, bgView.frame.origin.y + bgView.frame.size.height + 2, image.size.width,  image.size.height);
         [annotationView addSubview:imageView];
-        
-       
-
     }
     
-    if ( [_config objectForKey:@"text"] ){
-           //            image = [self getTextBitmap:image
-           //                text:[_config objectForKey:@"text"]
-           //                textSize:[[_config objectForKey:@"textSize"] floatValue]
-           //                textColor:[[_config objectForKey:@"textColor"] integerValue]
-           //            ];
-           //        }
-           UILabel *textLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 80, 30)];
-           textLabel.textColor = [UIColor redColor];
-        textLabel.text =[_config objectForKey:@"text"];
-        [annotationView addSubview:textLabel];
-
-        
-    }
     
     _view = annotationView;
     return _view;
