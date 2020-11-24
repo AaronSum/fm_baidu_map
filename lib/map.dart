@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:uuid/uuid.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/foundation.dart';
 import 'dart:async';
 import 'dart:io';
 import './over_types/types.dart';
@@ -25,13 +27,24 @@ class FmBaiduMap {
             viewType: "FmBaiduMapView",
             creationParams: {"name": _name},
             creationParamsCodec: StandardMessageCodec(),
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+              new Factory<OneSequenceGestureRecognizer>(
+                () => new EagerGestureRecognizer(),
+              ),
+            ].toSet(),
           )
         : AndroidView(
             viewType: "FmBaiduMapView",
             creationParams: {"name": _name},
             creationParamsCodec: StandardMessageCodec(),
+            gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>[
+              new Factory<OneSequenceGestureRecognizer>(
+                () => new EagerGestureRecognizer(),
+              ),
+            ].toSet(),
           );
   }
+
   /*
    * 获取2点距离
    */
@@ -87,6 +100,7 @@ class FmBaiduMap {
 
   /// 视图
   Widget get view => _map;
+
   /*
    * 添加一个标注
    */
