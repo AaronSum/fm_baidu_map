@@ -253,8 +253,8 @@
         NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
         UIImage* image =[UIImage imageWithContentsOfFile:path];
         
-        double imageWidth =image.size.width * 2 / 3.0;
-        double imageHeight =image.size.height * 2 / 3.0;
+        double imageWidth = 24;
+        double imageHeight = 25.3;
         
         double fixelW = 80.0;
         double fixelH = bgView.frame.size.height + imageHeight;
