@@ -221,7 +221,7 @@
     
     bgView.layer.masksToBounds = YES;
     bgView.layer.cornerRadius = 4;
-    bgView.layer.borderColor = [UIColor redColor].CGColor;
+    bgView.layer.borderColor = [UIColor colorWithRed:0.977 green:0.332 blue:0.09 alpha:1].CGColor;
     bgView.layer.borderWidth = 0.5;
     
     [annotationView addSubview:bgView];
