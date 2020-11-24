@@ -159,10 +159,10 @@
         UIImage* image =[UIImage imageWithContentsOfFile:path];
         if ( [_config objectForKey:@"text"] ){
             image = [self getTextBitmap:image
-                text:[_config objectForKey:@"text"]
-                textSize:[[_config objectForKey:@"textSize"] floatValue]
-                textColor:[[_config objectForKey:@"textColor"] integerValue]
-            ];
+                                   text:[_config objectForKey:@"text"]
+                               textSize:[[_config objectForKey:@"textSize"] floatValue]
+                              textColor:[[_config objectForKey:@"textColor"] integerValue]
+                     ];
         }
         double xOffset = 0;
         double yOffset = 0;
@@ -225,17 +225,26 @@
     bgView.layer.borderWidth = 0.5;
     
     [annotationView addSubview:bgView];
-
-    if ( [_config objectForKey:@"text"] ) {
-                
-        UILabel *label = [[UILabel alloc] initWithFrame:bgView.bounds];
-        label.numberOfLines = 2;
-        label.textAlignment = NSTextAlignmentCenter;
-        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithData:[[_config objectForKey:@"text"] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
-        label.attributedText = attrStr;
-        label.font = [UIFont systemFontOfSize:14];
-        [bgView addSubview:label];
+    
+    if ( [_config objectForKey:@"locname"] ) {
         
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(4, 5, 75, 17)];
+        label.textColor = [UIColor colorWithRed:0.2 green:0.2 blue:0.2 alpha:1];
+        label.textAlignment = NSTextAlignmentCenter;
+        label.text =[_config objectForKey:@"locname"];
+        label.font = [UIFont systemFontOfSize:12];
+        [bgView addSubview:label];
+    }
+    
+    
+    if ( [_config objectForKey:@"locdesc"] ) {
+        
+        UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(4, 22, 75, 17)];
+        label.textAlignment = NSTextAlignmentCenter;
+        NSAttributedString *attrStr = [[NSAttributedString alloc] initWithData:[[_config objectForKey:@"locdesc"] dataUsingEncoding:NSUnicodeStringEncoding] options:@{NSDocumentTypeDocumentAttribute:NSHTMLTextDocumentType} documentAttributes:nil error:nil];
+        label.attributedText = attrStr;
+        label.font = [UIFont systemFontOfSize:12];
+        [bgView addSubview:label];
     }
     
     
@@ -243,26 +252,20 @@
         NSString* key = [_registrar lookupKeyForAsset:[_config objectForKey:@"icon"]];
         NSString* path = [[NSBundle mainBundle] pathForResource:key ofType:nil];
         UIImage* image =[UIImage imageWithContentsOfFile:path];
-
-        double xOffset = 0;
-        double yOffset = 0;
-        if ( [_config objectForKey:@"anchorX"] ){
-            xOffset =[[_config objectForKey:@"anchorX"] doubleValue]-0.5;
-        }
-        if ( [_config objectForKey:@"anchorY"] ){
-            yOffset =[[_config objectForKey:@"anchorY"] doubleValue]-0.5;
-        }
+        
+        double imageWidth =image.size.width * 2 / 3.0;
+        double imageHeight =image.size.height * 2 / 3.0;
+        
         double fixelW = 80.0;
-        double fixelH = bgView.frame.size.height + image.size.height;
+        double fixelH = bgView.frame.size.height + imageHeight;
         
         annotationView.centerOffset =CGPointMake(-fixelW / 2, -fixelH);
         annotationView.image = nil;
         
         UIImageView *imageView = [[UIImageView alloc] initWithImage:image];
-        imageView.frame = CGRectMake(bgView.center.x - 18, bgView.frame.origin.y + bgView.frame.size.height + 2, image.size.width,  image.size.height);
+        imageView.frame = CGRectMake(bgView.center.x - imageWidth / 2, bgView.frame.origin.y + bgView.frame.size.height + 2, imageWidth, imageHeight);
         [annotationView addSubview:imageView];
     }
-    
     
     _view = annotationView;
     return _view;
@@ -335,11 +338,11 @@
 }
 
 -(BOOL)setIndex:(NSString*)name index:(int)index{
-//    FmOverlayItem* item =[_overlays valueForKey:name ];
-//    if ( !item ){
-//        return NO;
-//    }
-//    [item.overlay setIndex:index];
+    //    FmOverlayItem* item =[_overlays valueForKey:name ];
+    //    if ( !item ){
+    //        return NO;
+    //    }
+    //    [item.overlay setIndex:index];
     return YES;
 }
 -(void)setIndexAll:(int)index{
