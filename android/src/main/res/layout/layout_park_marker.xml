@@ -22,5 +22,5 @@
         tools:layout_height="24dp"
         tools:background="@android:color/holo_blue_bright"
         android:layout_width="24dp"
-        android:layout_height="24dp"/>
+        android:layout_height="26dp"/>
 </LinearLayout>
