@@ -20,6 +20,8 @@ class FmMapLocationMark extends FmMapOverlays {
     this.anchorX = 0.5,
     this.anchorY = 0.5,
     this.scale = 1.0,
+    this.locname,
+    this.locdesc,
   }) {
     if (id == null) {
       var uuid = new Uuid();
@@ -41,6 +43,8 @@ class FmMapLocationMark extends FmMapOverlays {
   double anchorX;
   double anchorY;
   double scale;
+  String locname;
+  String locdesc;
 
   /// 删除标注
   @override
@@ -84,6 +88,12 @@ class FmMapLocationMark extends FmMapOverlays {
     if (m.containsKey("title")) {
       title = m["title"];
     }
+    if (m.containsKey("locname")) {
+      locname = m["locname"];
+    }
+    if (m.containsKey("locdesc")) {
+      locdesc = m["locdesc"];
+    }
     textSize = m["textSize"] ?? 16;
     textColor = m["textColor"] ?? 0xFF000000;
     rotate = m["rotate"] ?? 0.0;
@@ -112,6 +122,12 @@ class FmMapLocationMark extends FmMapOverlays {
     };
     if (zIndex != null) {
       option["zIndex"] = zIndex;
+    }
+    if (locname != null) {
+      option["locname"] = locname;
+    }
+    if (locdesc != null) {
+      option["locdesc"] = locdesc;
     }
     if (title != null) {
       option["title"] = title;
