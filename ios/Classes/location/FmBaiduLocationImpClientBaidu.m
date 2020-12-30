@@ -114,6 +114,7 @@
     _locationManager.locationTimeout = 10;
     //设置获取地址信息超时时间
     _locationManager.reGeocodeTimeout = 10;
+    _locationManager.delegate = self;
     
     [self initSDK];
     
